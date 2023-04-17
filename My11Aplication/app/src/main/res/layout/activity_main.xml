@@ -8,6 +8,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,18 +19,30 @@
             android:layout_height="wrap_content"
             android:id="@+id/toolbar"
             style="@style/Widget.MaterialComponents.Toolbar.Primary" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/tabs"
+            app:tabTextColor="#ff000000"/>
+
         <androidx.viewpager2.widget.ViewPager2
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/viewpager2"/>
     </LinearLayout>
-    <TextView
-       android:layout_width="300dp"
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/main_drawer"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
         android:background="#ffaaff"
         android:text="Drawer Layout!!!"
         android:fitsSystemWindows="true"
         android:gravity="center"
-        android:layout_gravity="start"/>
+        android:layout_gravity="start"
+        app:headerLayout="@layout/navigation_header"
+        app:menu="@menu/menu_navigation"
+        />
 </androidx.drawerlayout.widget.DrawerLayout>
 
