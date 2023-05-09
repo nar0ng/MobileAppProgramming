@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <SwitchPreference
+        app:key="power"
+        app:title="ON/OFF" />
+
+    <PreferenceCategory
+        app:key="motification"
+        app:title="알림 설정">
+        <SwitchPreference
+            app:key="message"
+            app:title="메시지 알림" />
+        <SwitchPreference
+            app:key="sound"
+            app:title="소리 알림" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:key="etc"
+        app:title="기타 설정">
+        <EditTextPreference
+            app:key="id"
+            app:title="ID 설정" />
+        <ListPreference
+            android:entries="@array/my_color"
+            android:entryValues="@array/my_color_values"
+            app:key="bg_color"
+            app:title="베경색 선택" />
+
+        <ListPreference
+            android:entries="@array/my_color"
+            android:entryValues="@array/my_color_values"
+            app:key="tx_color"
+            app:title="글자색 선택" />
+
+
+    </PreferenceCategory>
+</PreferenceScreen>

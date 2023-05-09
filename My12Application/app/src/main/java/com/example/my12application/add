@@ -1,0 +1,132 @@
+package com.tutorial.ch13_activity
+
+import android.app.Activity
+import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import com.tutorial.ch13_activity.databinding.ActivityAddBinding
+
+class AddActivity : AppCompatActivity() {
+    lateinit var binding: ActivityAddBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityAddBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_add, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when(item.itemId){
+        // 사용자가 입력한 텍스트를 인텐트의 부가 데이터에 저장
+        R.id.menu_add_save -> {
+            val intent = intent
+            intent.putExtra("result", binding.addEditView.text.toString())
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+            true
+        }
+        else -> true
+    }
+}
+
+package com.tutorial.ch13_activity
+
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.tutorial.ch13_activity.databinding.ActivityMainBinding
+
+class MainActivity : AppCompatActivity() {
+    lateinit var binding: ActivityMainBinding
+    var datas: MutableList<String>? = null
+    lateinit var adapter: MyAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.mainFab.setOnClickListener {
+            val intent = Intent(this, AddActivity::class.java)
+            startActivityForResult(intent, 10)
+        }
+
+        // 번들 객체에 저장된 데이터를 가져와서 데이터 리스트 초기화
+        datas = savedInstanceState?.let {
+            it.getStringArrayList("datas")?.toMutableList()
+        } ?: mutableListOf()
+
+        // 레이아웃 매니저 지정
+        val layoutManager = LinearLayoutManager(this) // 기본적으로 VERTICAL
+        binding.mainRecyclerView.layoutManager = layoutManager
+
+        // 어댑터 지정
+        adapter = MyAdapter(datas)
+        binding.mainRecyclerView.adapter = adapter
+
+        // 아이템 구분선 추가
+        binding.mainRecyclerView.addItemDecoration(
+            DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
+        )
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == 10 && resultCode == Activity.RESULT_OK){
+            // 다른 액티비티로부터 전달 받은 부가 데이터를 꺼내서 리스트에 추가
+            data!!.getStringExtra("result")?.let {
+                datas?.add(it)
+                adapter.notifyDataSetChanged()
+            }
+        }
+    }
+
+    // 번들 객체에 데이터 리스트 담기
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putStringArrayList("datas", datas?.let { ArrayList(it) })
+    }
+}
+
+package com.tutorial.ch13_activity
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.tutorial.ch13_activity.databinding.ItemRecyclerviewBinding
+
+// 아이템 뷰를 저장하는 뷰 홀더 클래스
+// item_recyclerview.xml 파일과의 뷰 바인딩
+class MyViewHolder(val binding: ItemRecyclerviewBinding)
+    : RecyclerView.ViewHolder(binding.root)
+
+// 생성자 인자로 데이터 전달 받음.
+// https://recipes4dev.tistory.com/154 (자바 코드와 비교)
+class MyAdapter(val datas: MutableList<String>?)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>(){ // 리사이클러뷰의 어댑터 상속 받기
+
+    // 아이템 뷰를 위한 뷰 홀더 객체 생성하여 리턴
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
+    : RecyclerView.ViewHolder // return문 없이 바로 등호 기호로 리턴, Ctrl + P로 인자 확인 가능
+            = MyViewHolder(ItemRecyclerviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+
+    // position에 해당하는 데이터를 뷰 홀더의 아이템 뷰에 표시
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val binding = (holder as MyViewHolder).binding // as는 형변환
+        binding.itemData.text = datas!![position]
+
+    }
+
+    // 전체 데이터 개수 리턴
+    override fun getItemCount(): Int {
+        return datas?.size ?: 0 // 엘비스 연산자
+    }
+}
