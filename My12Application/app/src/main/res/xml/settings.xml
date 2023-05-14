@@ -6,7 +6,7 @@
         app:title="ON/OFF" />
 
     <PreferenceCategory
-        app:key="motification"
+        app:key="modification"
         app:title="알림 설정">
         <SwitchPreference
             app:key="message"
@@ -32,7 +32,5 @@
             android:entryValues="@array/my_color_values"
             app:key="tx_color"
             app:title="글자색 선택" />
-
-
     </PreferenceCategory>
 </PreferenceScreen>
