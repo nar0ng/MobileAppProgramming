@@ -55,10 +55,10 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.menu1 -> {
-                Log.d("MobileApp", "내비게이션 메뉴 변경했다")
+                Log.d("MobileApp", "내비게이션 메뉴 변경1")
             }
             R.id.menu2 -> {
-                Log.d("MobileApp", "내비게이션 메뉴 변경")
+                Log.d("MobileApp", "내비게이션 메뉴 변경2")
             }
             R.id.menu3 -> {
                 Log.d("MobileApp", "내비게이션 메뉴 변경 사항")
