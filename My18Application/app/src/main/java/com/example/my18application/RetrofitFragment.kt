@@ -1,13 +1,16 @@
 package com.example.my18application
 
 import android.os.Bundle
-import android.telecom.Call
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.my18application.databinding.FragmentRetrofitBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -40,10 +43,35 @@ class RetrofitFragment : Fragment() {
         val binding = FragmentRetrofitBinding.inflate(inflater, container, false)
         var mutableList: MutableList<MyItem>
 
+        // edtView에서 키워드에 넣기
         binding.btnSearch.setOnClickListener {
             var keyword = binding.edtProduct.text.toString()
-            // val call: Call<MyModel>
+            val call: Call<MyModel> = MyApplication.networkService.getList(
+                keyword,
+             "mzKGLOrgtZ0gyKqCNlhsWPuV0VaLh0Vz23xUs+W2qfpk/96WdbWHVx00+p8rdoi/rY1HU8sVaWOOtL8vAW3x3A==",
+                1,
+                5,
+                "json"
+            )
+            Log.d("MobileApp", "${call.request()}")
+
+            call?.enqueue(object: Callback<MyModel> {
+                override fun onResponse(call: retrofit2.Call<MyModel>, response: Response<MyModel>
+                ) {
+                 if (response.isSuccessful){
+                     // response의 바디를 부르면 json의 body~~ 부터의 내용이 전달된다.
+                     Log.d("mobileApp", "${response.body()}")
+                     binding.retrofitRecyclerView.layoutManager = LinearLayoutManager(context)
+                     binding.retrofitRecyclerView.adapter = MyRetrofitAdapter(requireContext(), response.body()!!.body.items)
+                 }
+                }
+
+                override fun onFailure(call: retrofit2.Call<MyModel>, t: Throwable) {
+                    Log.d("mobileApp", "${t.toString()}")
+                }
+            })
         }
+
 
         mutableList = mutableListOf<MyItem>()
         binding.retrofitRecyclerView.layoutManager = LinearLayoutManager(context)

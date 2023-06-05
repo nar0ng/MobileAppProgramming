@@ -39,6 +39,5 @@ class MyRetrofitAdapter(val context: Context, val datas: MutableList<MyItem>?) :
         Glide.with(context)
             .load(model.item.imgurl1)
             .into(binding.itemImage2)
-
     }
 }
